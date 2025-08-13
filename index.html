@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Security Test Case Generator</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body class="bg-gray-100 font-sans">
+
+  <div class="max-w-3xl mx-auto mt-12 p-6 bg-white shadow rounded-lg">
+    <h1 class="text-2xl font-bold mb-4 text-center">🔒 Security Test Case Generator</h1>
+    <textarea id="feature" class="w-full border rounded p-3 mb-4" rows="5" placeholder="Enter your user story or feature..."></textarea>
+    <button onclick="generateTestCases()" class="w-full bg-blue-600 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded">
+      Generate Test Cases
+    </button>
+
+    <div id="output" class="mt-6 whitespace-pre-wrap bg-gray-50 p-4 rounded border"></div>
+  </div>
+
+  <script>
+    const HF_API_KEY = "YOUR_HUGGINGFACE_API_KEY"; // paste your key here
+    const MODEL_URL = "https://api-inference.huggingface.co/models/mistralai/Mistral-7B-Instruct-v0.1";
+
+    async function generateTestCases() {
+      const feature = document.getElementById("feature").value.trim();
+      const outputDiv = document.getElementById("output");
+
+      if (!feature) {
+        outputDiv.textContent = "⚠️ Please enter a user story or feature.";
+        return;
+      }
+
+      outputDiv.textContent = "⏳ Generating test cases...";
+
+      try {
+        const response = await fetch(MODEL_URL, {
+          method: "POST",
+          headers: {
+            "Authorization": `Bearer ${HF_API_KEY}`,
+            "Content-Type": "application/json"
+          },
+          body: JSON.stringify({
+            inputs: `Generate detailed security test cases for the following user story:\n${feature}\n\nFormat the output as numbered list with test case description and expected result.`
+          })
+        });
+
+        const data = await response.json();
+
+        if (Array.isArray(data) && data[0]?.generated_text) {
+          outputDiv.textContent = data[0].generated_text;
+        } else if (data.error) {
+          outputDiv.textContent = `Error: ${data.error}`;
+        } else {
+          outputDiv.textContent = "⚠️ No result from model.";
+        }
+      } catch (err) {
+        outputDiv.textContent = "❌ Error generating test cases: " + err.message;
+      }
+    }
+  </script>
+</body>
+</html>
