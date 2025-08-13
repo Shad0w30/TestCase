@@ -19,7 +19,7 @@
   </div>
 
   <script>
-    const HF_API_KEY = "YOUR_HUGGINGFACE_API_KEY"; // paste your key here
+    const HF_API_KEY = "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"; // paste your key here
     const MODEL_URL = "https://api-inference.huggingface.co/models/mistralai/Mistral-7B-Instruct-v0.1";
 
     async function generateTestCases() {
@@ -37,7 +37,7 @@
         const response = await fetch(MODEL_URL, {
           method: "POST",
           headers: {
-            "Authorization": `Bearer ${HF_API_KEY}`,
+            "Authorization": `Bearer ${HF_API_}`,
             "Content-Type": "application/json"
           },
           body: JSON.stringify({
