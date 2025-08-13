@@ -10,7 +10,15 @@
 
   <div class="max-w-3xl mx-auto mt-12 p-6 bg-white shadow rounded-lg">
     <h1 class="text-2xl font-bold mb-4 text-center">🔒 Security Test Case Generator</h1>
+
+    <!-- API Key Input -->
+    <label class="block mb-2 font-semibold">Hugging Face API Key</label>
+    <input id="apiKey" type="password" class="w-full border rounded p-2 mb-4" placeholder="hf_xxxxxxxxxxxxxxxxxxxxx">
+
+    <!-- User Story Input -->
+    <label class="block mb-2 font-semibold">User Story / Feature</label>
     <textarea id="feature" class="w-full border rounded p-3 mb-4" rows="5" placeholder="Enter your user story or feature..."></textarea>
+
     <button onclick="generateTestCases()" class="w-full bg-blue-600 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded">
       Generate Test Cases
     </button>
@@ -19,13 +27,17 @@
   </div>
 
   <script>
-    const HF_API_KEY = "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"; // paste your key here
     const MODEL_URL = "https://api-inference.huggingface.co/models/mistralai/Mistral-7B-Instruct-v0.1";
 
     async function generateTestCases() {
+      const apiKey = document.getElementById("apiKey").value.trim();
       const feature = document.getElementById("feature").value.trim();
       const outputDiv = document.getElementById("output");
 
+      if (!apiKey) {
+        outputDiv.textContent = "⚠️ Please enter your Hugging Face API key.";
+        return;
+      }
       if (!feature) {
         outputDiv.textContent = "⚠️ Please enter a user story or feature.";
         return;
@@ -37,7 +49,7 @@
         const response = await fetch(MODEL_URL, {
           method: "POST",
           headers: {
-            "Authorization": `Bearer ${HF_API_}`,
+            "Authorization": `Bearer ${apiKey}`,
             "Content-Type": "application/json"
           },
           body: JSON.stringify({
